@@ -1,0 +1,1 @@
+Core is : [php-telegram-bot/core](https://github.com/php-telegram-bot/core)
