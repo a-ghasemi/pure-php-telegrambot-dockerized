@@ -3,8 +3,9 @@ services:
   web:
     image: nginx:latest
     volumes:
-      - ./configs/site.conf:/etc/nginx/conf.d/site.conf
-      - ./app:/app
+      - ./configs/site.conf:/etc/nginx/conf.d/site.conf:ro
+      - ./configs/fastcgi-php.conf:/etc/nginx/snippets/fastcgi-php.conf:ro
+      - ./app:/app:mo
     ports:
       - "8005:80"
     depends_on:
