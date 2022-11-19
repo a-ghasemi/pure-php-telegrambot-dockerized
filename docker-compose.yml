@@ -8,32 +8,9 @@ services:
       - ./app:/app:mo
     ports:
       - "8005:80"
-    depends_on:
-      - phpfpm
     networks:
-      - app_tier
-
-  db:
-    image: bitnami/mariadb:latest
-    volumes:
-      - ./data:/bitnami/mariadb
-#      - /configs/db.cnf:/opt/bitnami/mariadb/conf/my_custom.cnf:ro
-    env_file:
-      - ./configs/db.env
-    networks:
-      - db_tier
-
-  phpfpm:
-    image: bitnami/php-fpm:latest
-    volumes:
-#      - ./core:/core
-      - ./app:/app
-    networks:
-      - db_tier
       - app_tier
 
 networks:
   app_tier:
-    driver: bridge
-  db_tier:
     driver: bridge
