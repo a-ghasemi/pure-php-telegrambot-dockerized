@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('bots', function (Blueprint $table) {
             $table->id();
+            $table->string('title',100)->unique();
             $table->string('token',20)->unique();
             $table->string('class_slug',30)->unique();
             $table->timestamps();
