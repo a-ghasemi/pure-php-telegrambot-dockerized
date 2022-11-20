@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('question_category_id')->constrained('question_categories')->nullOnDelete();
+            $table->foreignId('question_category_id')->nullable()->constrained('question_categories')->nullOnDelete();
             $table->tinyText('title')->nullable();
             $table->enum('type',['text','voice'])->default('text');
             $table->text('content');
