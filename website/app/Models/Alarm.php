@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Alarm extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'question_id',
+        'webinar_id',
+        'status',
+        'response',
+    ];
 }
