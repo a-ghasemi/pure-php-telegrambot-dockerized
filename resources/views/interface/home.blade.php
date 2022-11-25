@@ -20,6 +20,6 @@
     </div>
 
     <div class="links">
-        Follow us at : <a href="https://github.com/a-ghasemi">Github <i class="fa fa-github"></i></a>
+        read,follow,star at : <a href="https://github.com/a-ghasemi">Github <i class="fa fa-github"></i></a>
     </div>
 @endsection
