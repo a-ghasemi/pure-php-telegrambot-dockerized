@@ -15,7 +15,10 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name'        => env('APP_NAME', 'Laravel'),
+    'title'       => env('APP_TITLE', 'Laravel'),
+    'description' => env('APP_DESC', 'Laravel'),
+    'version'     => env('APP_VER', '1.0'),
 
     /*
     |--------------------------------------------------------------------------
