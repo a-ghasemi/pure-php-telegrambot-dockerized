@@ -52,4 +52,21 @@ $app->singleton(
 |
 */
 
+$production_servers = [
+    'vm-12402',
+];
+
+
+$set_local = true;
+$hostname = gethostname();
+
+foreach($production_servers as $phrase){
+    if((bool)preg_match('/[\S\s]*'.$phrase.'[\S\s]*/', $hostname)){
+        $set_local = false;
+        break;
+    }
+}
+
+$app->loadEnvironmentFrom($set_local? '.env.local':'.env');
+
 return $app;
