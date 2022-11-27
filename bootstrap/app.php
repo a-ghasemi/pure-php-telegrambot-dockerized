@@ -53,7 +53,7 @@ $app->singleton(
 */
 
 $production_servers = [
-    'vm-12402',
+    'nl-ams',
 ];
 
 
