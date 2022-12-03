@@ -17,4 +17,9 @@ class TelegramId extends Model
         'lastname',
         'language',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
