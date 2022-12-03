@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Console\Command;
-use Illuminate\Http\Request;
 use Longman\TelegramBot\Exception\TelegramException;
-use Longman\TelegramBot\Telegram;
 use Packages\BotConfig;
 
 class Webhook extends Controller
@@ -21,7 +18,7 @@ class Webhook extends Controller
         try {
             $bot_config->checkConfiguration();
         } catch (\Exception $e) {
-            $this->error($e->getMessage());
+            error_log($e->getMessage());
         }
 
         try {
@@ -29,7 +26,7 @@ class Webhook extends Controller
             $telegram->addCommandsPath(app_path('BotCommands'));
             $telegram->handle();
         } catch (TelegramException $e) {
-            $this->error($e->getMessage());
+            error_log($e->getMessage());
         }
     }
 
