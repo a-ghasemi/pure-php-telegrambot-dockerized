@@ -11,5 +11,5 @@ Route::group([
         'prefix' => 'v1',
         'as' => 'v1.',
     ], function () {
-        Route::get('webhook/{token}', "\App\Http\Controllers\Webhook@webhook")->name('bot.webhook');
+        Route::get('webhook/{token}', "\App\Http\Controllers\Api\V1\Webhook@webhook")->name('bot.webhook');
 });

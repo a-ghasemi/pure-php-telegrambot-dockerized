@@ -26,6 +26,7 @@ class Webhook extends Controller
 
         try {
             $telegram = $bot_config->makeTelegramInstance();
+            $telegram->addCommandsPath(app_path('BotCommands'));
             $telegram->handle();
         } catch (TelegramException $e) {
             $this->error($e->getMessage());

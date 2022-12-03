@@ -4,7 +4,7 @@ namespace App\BotCommands;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 
-class Start extends SystemCommand
+class StartCommand extends SystemCommand
 {
     protected $name = 'start';
     protected $description = 'Start command';
