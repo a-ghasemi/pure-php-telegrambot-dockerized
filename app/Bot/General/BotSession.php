@@ -2,12 +2,11 @@
 
 namespace App\Bot\General;
 
-use App\Models\User;
-use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Commands\Command;
 
 class BotSession
 {
-    protected SystemCommand $command;
+    protected Command $command;
     protected array $variables = [];
 
     public function __construct($command)
@@ -37,7 +36,7 @@ class BotSession
 
     protected function getSessionId():string
     {
-        return "sess_" . $this->command->getMessage()->getChat()->getId();
+        return "sess_" . $this->command->getMessage()?->getChat()?->getId();
     }
 
     public function __set(string $name, $value): void

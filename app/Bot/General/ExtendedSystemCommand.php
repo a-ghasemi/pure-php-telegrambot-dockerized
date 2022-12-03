@@ -8,7 +8,7 @@ use Longman\TelegramBot\Telegram;
 
 abstract class ExtendedSystemCommand extends SystemCommand
 {
-    protected User $user;
+    protected User|null $user;
     protected BotSession $session;
 
     public function __construct(Telegram $telegram, ?Update $update = null)
