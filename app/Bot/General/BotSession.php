@@ -2,6 +2,7 @@
 
 namespace App\Bot\General;
 
+use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Commands\Command;
 
 class BotSession
@@ -20,21 +21,21 @@ class BotSession
         $this->updateCache();
     }
 
-    protected function getCache():void
+    protected function getCache(): void
     {
-        $cache = cache($this->getSessionId()) ?? null;
+        $cache = Cache::get($this->getSessionId());
 
-        if($cache){
+        if ($cache) {
             $this->variables = $cache;
         }
     }
 
-    protected function updateCache():void
+    protected function updateCache(): void
     {
-        cache([$this->session_id => $this->variables]);
+        Cache::put($this->session_id, $this->variables);
     }
 
-    protected function getSessionId():string
+    protected function getSessionId(): string
     {
         return "sess_" . $this->command->getMessage()?->getChat()?->getId();
     }
@@ -42,6 +43,7 @@ class BotSession
     public function __set(string $name, $value): void
     {
         $this->variables[$name] = $value;
+        $this->updateCache();
     }
 
     public function __get(string $name)
