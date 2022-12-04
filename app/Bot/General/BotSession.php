@@ -21,14 +21,14 @@ class BotSession
         $cache = Cache::get($this->getSessionId());
         $this->variables = $cache ?? [];
 
-Log::debug('get_cache:'.$this->getSessionId(). PHP_EOL . var_export($this->variables,true));
+//Log::debug('get_cache:'.$this->getSessionId(). PHP_EOL . var_export($this->variables,true));
     }
 
     protected function updateCache(): void
     {
         Cache::put($this->getSessionId(), $this->variables);
 
-Log::debug('update_cache:'.$this->getSessionId() . PHP_EOL . var_export($this->variables,true));
+//Log::debug('update_cache:'.$this->getSessionId() . PHP_EOL . var_export($this->variables,true));
     }
 
     protected function getSessionId(): string
