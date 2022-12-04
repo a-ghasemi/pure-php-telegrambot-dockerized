@@ -15,8 +15,6 @@ class StartCommand extends ExtendedSystemCommand
 
     public function execute(): ServerResponse
     {
-        $this->session->executed_command = $this->name;
-
         if($this->getMessage()->getCommand() == 'start'){
             $this->session->state = 'base';
         }

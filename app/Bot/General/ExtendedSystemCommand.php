@@ -19,6 +19,12 @@ abstract class ExtendedSystemCommand extends SystemCommand
 
         $this->user = (new BotUser($this))->getRegisteredUser();
         $this->session = (new BotSession($this));
+
+        $this->session->executed_command = $this->name;
+//        if($this->getMessage()->getCommand() == ltrim($this->usage,'/')){
+//            $this->session->state = 'base';
+//        }
+
     }
 
     protected function debugLog(string $message): void
