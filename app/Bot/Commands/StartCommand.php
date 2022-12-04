@@ -3,6 +3,7 @@
 namespace App\Bot\Commands;
 
 use App\Bot\General\ExtendedSystemCommand;
+use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\ServerResponse;
 
@@ -15,6 +16,10 @@ class StartCommand extends ExtendedSystemCommand
     public function execute(): ServerResponse
     {
         $this->session->executed_command = $this->name;
+
+        if($this->getMessage()->getCommand() == 'start'){
+            $this->session->state = 'base';
+        }
 
         $state = $this->session->state ?? 'base';
 
