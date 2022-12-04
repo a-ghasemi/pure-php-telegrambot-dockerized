@@ -13,6 +13,8 @@ class StartCommand extends ExtendedSystemCommand
 
     public function execute(): ServerResponse
     {
+        $this->replyToChat( __('bot.start.welcome') );
+
         if($this->user){
             return $this->showUserMenu();
         }
