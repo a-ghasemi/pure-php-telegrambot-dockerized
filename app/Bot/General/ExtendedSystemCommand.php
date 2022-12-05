@@ -11,7 +11,7 @@ abstract class ExtendedSystemCommand extends SystemCommand
 {
     protected User|null $user;
     protected BotSession $session;
-    protected $debug = false;
+    protected $debug = true;
 
     public function __construct(Telegram $telegram, ?Update $update = null)
     {
@@ -20,7 +20,9 @@ abstract class ExtendedSystemCommand extends SystemCommand
         $this->user = (new BotUser($this))->getRegisteredUser();
         $this->session = (new BotSession($this));
 
-        $this->session->executed_command = $this->name;
+        if(!in_array($this->name,['generic','genericmessage'])){
+            $this->session->executed_command = $this->name;
+        }
 //        if($this->getMessage()->getCommand() == ltrim($this->usage,'/')){
 //            $this->session->state = 'base';
 //        }

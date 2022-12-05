@@ -5,11 +5,15 @@ namespace App\Bot\Commands;
 use App\Bot\General\ExtendedSystemCommand;
 use App\Models\Question;
 use App\Models\QuestionCategory;
+use App\Models\TelegramId;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\Keyboard;
+use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Request;
+use MongoDB\Driver\Server;
 
 class StartCommand extends ExtendedSystemCommand
 {
@@ -43,18 +47,23 @@ class StartCommand extends ExtendedSystemCommand
             case 'has_new_category':
                 return $this->getNewCategory();
                 break;
-            case 'entered_category':
-                if (!$this->user) {
+            case 'request_user_info':
                     return $this->getUserInfo();
-                }
-                return $this->showUserMenu();
-                break;
-            case 'entered_user_info':
-                return $this->registerUserInfo();
                 break;
         }
 
         return $this->replyToChat(__('bot.command.wrong'));;
+    }
+
+    protected function showWelcome(): ServerResponse
+    {
+        $this->replyToChat(__('bot.start.welcome'));
+
+        if ($this->user) {
+            return $this->showUserMenu();
+        }
+
+        return $this->askForQuestion();
     }
 
     protected function showUserMenu(): ServerResponse
@@ -70,17 +79,6 @@ class StartCommand extends ExtendedSystemCommand
         return $this->replyToChat(__('bot.question.content.ask'), [
             'reply_markup' => Keyboard::remove(['selective' => true]),
         ]);
-    }
-
-    protected function showWelcome(): ServerResponse
-    {
-        $this->replyToChat(__('bot.start.welcome'));
-
-        if ($this->user) {
-            return $this->showUserMenu();
-        }
-
-        return $this->askForQuestion();
     }
 
     protected function getQuestionContent(): ServerResponse
@@ -109,7 +107,7 @@ class StartCommand extends ExtendedSystemCommand
             'title'                => null,
             'type'                 => $question_type,
             'content'              => $question,
-            'order'                => null,
+            'order'                => 0,
             'status'               => 'pending',
         ]);
 
@@ -133,39 +131,78 @@ class StartCommand extends ExtendedSystemCommand
 
         $this->replyToChat(__('bot.question.title.got_it'));
 
-        # make category buttons
-
-        $categories = QuestionCategory::where('status','published')
-            ->orderBy('order')->orderBy('id')
-            ->get(['id','title'])
-            ->pluck('id','title');
-
-        $keyboard = [];
-        $item = [];
-        foreach($categories as $id => $title){
-            $item[] = ['text' => $title, 'callback_data' => "cat-{$id}"];
-            if(count($item) >= 2){
-                $keyboard[] = $item;
-                $item = [];
-            }
+//        # make category buttons
+//        $categories = QuestionCategory::where('status','published')
+//            ->orderBy('order')->orderBy('id')
+//            ->get(['id','title'])
+//            ->pluck('title','id');
+//
+//        $keyboard = [];
+//        $item = [];
+//        foreach($categories as $id => $title){
+//            $item[] = ['text' => $title, 'callback_data' => "cat-{$id}"];
+//            if(count($item) >= 2){
+//                $keyboard[] = $item;
+//                $item = [];
+//            }
+//        }
+//        $keyboard[] = [['text' => __('bot.buttons.new_category'),'callback_data' => 'cat-new']];
+//
+//        $keyboard = (new Keyboard(...$keyboard));
+//
+//        $this->session->state = 'ask_for_category';
+//        return $this->replyToChat(__('bot.question.set_category'), [
+//            'reply_markup' => $keyboard,
+//        ]);
+        if (!$this->user) {
+            $this->session->state = 'request_user_info';
+            return $this->replyToChat(__('bot.question.submitted'), [
+                'reply_markup' => (new Keyboard(
+                    (new KeyboardButton('ثبت اطلاعات تماس'))->setRequestContact(true)
+                ))
+                ->setOneTimeKeyboard(true)
+            ]);
+        }
+        else{
+            $this->session->state = 'finish_question';
+            return $this->replyToChat(__('bot.question.submitted'), [
+                'reply_markup' => Keyboard::remove(),
+            ]);
         }
 
-        $keyboard = (new InlineKeyboard($keyboard));
-
-        $this->session->state = 'ask_for_category';
-        return $this->replyToChat(__('bot.question.set_category'), [
-            'reply_markup' => $keyboard,
-        ]);
     }
 
     protected function getCategory(): ServerResponse
     {
-        $this->replyToChat(__('bot.question.got_it'));
+        $message = $this->getMessage();
+        $command = $message->getCommand();
+        $this->debugLog($command);
 
-        return $this->replyToChat(__('bot.question.registered'), [
+
+        $this->replyToChat(__('bot.category.got_it'));
+
+        return $this->replyToChat(__('bot.category.registered'), [
             'reply_markup' => Keyboard::remove(['selective' => true]),
         ]);
     }
 
+    protected function getUserInfo(): ServerResponse
+    {
+        $message = $this->getMessage();
+
+        TelegramId::create([
+            'user_id' => null,
+            'telegram_id' => $message->getFrom()->getId(),
+            'phone_number' => $message->getContact()->getPhoneNumber(),
+            'username' => $message->getFrom()->getUsername(),
+            'firstname' => $message->getFrom()->getFirstName(),
+            'lastname' => $message->getFrom()->getLastName(),
+            'language' => $message->getFrom()->getLanguageCode(),
+        ]);
+
+        $this->replyToChat(__('bot.question.finished'));
+
+        return $this->showUserMenu();
+    }
 
 }

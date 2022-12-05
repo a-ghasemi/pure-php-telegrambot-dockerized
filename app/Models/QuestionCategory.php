@@ -14,4 +14,8 @@ class QuestionCategory extends Model
         'status',
     ];
 
+    public function questions(){
+        return $this->hasMany(Question::class);
+    }
+
 }

@@ -11,6 +11,7 @@ class TelegramId extends Model
 
     protected $fillable = [
         'user_id',
+        'phone_number',
         'telegram_id',
         'username',
         'firstname',

@@ -16,4 +16,9 @@ class Question extends Model
         'order',
         'status',
     ];
+
+    public function category(){
+        return $this->belongsTo(QuestionCategory::class);
+    }
+
 }
