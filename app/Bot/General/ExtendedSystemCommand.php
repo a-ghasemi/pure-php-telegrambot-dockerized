@@ -1,7 +1,7 @@
 <?php
 namespace App\Bot\General;
 
-use App\Models\User;
+use App\Models\TelegramId;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Request;
@@ -9,7 +9,7 @@ use Longman\TelegramBot\Telegram;
 
 abstract class ExtendedSystemCommand extends SystemCommand
 {
-    protected User|null $user;
+    protected TelegramId|null $user;
     protected BotSession $session;
     protected $debug = true;
 
