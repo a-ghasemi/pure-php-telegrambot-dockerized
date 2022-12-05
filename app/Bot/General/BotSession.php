@@ -16,6 +16,12 @@ class BotSession
         $this->command = $command;
     }
 
+    public function refresh()
+    {
+        $this->variables = [];
+        $this->updateCache();
+    }
+
     protected function getCache(): void
     {
         $cache = Cache::get($this->getSessionId());
