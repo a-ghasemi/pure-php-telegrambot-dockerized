@@ -10,7 +10,7 @@ class Question extends Model
     use HasFactory;
     protected $fillable = [
         'question_category_id',
-        'user_id',
+        'telegram_user_id',
         'title',
         'type',
         'content',
@@ -20,6 +20,10 @@ class Question extends Model
 
     public function category(){
         return $this->belongsTo(QuestionCategory::class);
+    }
+
+    public function telegramId(){
+        return $this->belongsTo(TelegramId::class,'telegram_user_id');
     }
 
 }

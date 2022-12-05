@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('question_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('telegram_user_id')->nullable()->constrained('telegram_ids')->cascadeOnDelete();
             $table->string('title');
             $table->unsignedTinyInteger('order')->default(0);
             $table->enum('status',['requested','published'])->default('requested');

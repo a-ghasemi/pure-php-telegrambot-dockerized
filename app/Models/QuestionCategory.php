@@ -9,7 +9,7 @@ class QuestionCategory extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
+        'telegram_user_id',
         'title',
         'order',
         'status',
@@ -19,4 +19,7 @@ class QuestionCategory extends Model
         return $this->hasMany(Question::class);
     }
 
+    public function telegramId(){
+        return $this->belongsTo(TelegramId::class,'telegram_user_id');
+    }
 }

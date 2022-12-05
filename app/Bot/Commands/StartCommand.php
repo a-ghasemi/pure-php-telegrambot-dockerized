@@ -105,6 +105,7 @@ class StartCommand extends ExtendedSystemCommand
 
         $question_record = Question::create([
             'question_category_id' => null,
+            'telegram_user_id'     => null,
             'title'                => null,
             'type'                 => $question_type,
             'content'              => $question,
@@ -179,6 +180,9 @@ class StartCommand extends ExtendedSystemCommand
         $command = $message->getCommand();
         $this->debugLog($command);
 
+        Question::find($this->session->question_id)->update([
+            'category_id' => intval($command),
+        ]);
 
         $this->replyToChat(__('bot.category.got_it'));
 
@@ -191,7 +195,7 @@ class StartCommand extends ExtendedSystemCommand
     {
         $message = $this->getMessage();
 
-        TelegramId::create([
+        $tid = TelegramId::create([
             'user_id' => null,
             'telegram_id' => $message->getFrom()->getId(),
             'phone_number' => $message->getContact()->getPhoneNumber(),
@@ -200,6 +204,11 @@ class StartCommand extends ExtendedSystemCommand
             'lastname' => $message->getFrom()->getLastName(),
             'language' => $message->getFrom()->getLanguageCode(),
         ]);
+
+        Question::find($this->session->question_id)->update([
+            'telegram_user_id' => $tid->id,
+        ]);
+
 
         $this->replyToChat(__('bot.question.finished'));
 
