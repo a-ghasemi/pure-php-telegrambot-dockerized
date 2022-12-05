@@ -15,7 +15,7 @@ class BotUser
         $this->command = $command;
     }
 
-    public function getRegisteredUser():User|null
+    public function getRegisteredUser():TelegramId|null
     {
         $user_id = $this->command->getMessage()?->getFrom()?->getId();
         if(!$user_id) return null;
