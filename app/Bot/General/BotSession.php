@@ -42,14 +42,14 @@ class BotSession
         return "sess_" . $this->command->getMessage()?->getChat()?->getId();
     }
 
-    protected function __set(string $name, $value): void
+    public function __set(string $name, $value): void
     {
         $this->getCache();
         $this->variables[$name] = $value;
         $this->updateCache();
     }
 
-    protected function __get(string $name)
+    public function __get(string $name)
     {
         $this->getCache();
         return $this->variables[$name] ?? null;
