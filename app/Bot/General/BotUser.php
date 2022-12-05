@@ -23,6 +23,6 @@ class BotUser
         $telegram_id = TelegramId::where('telegram_id',$user_id)->first();
 
         if(!$telegram_id) return null;
-        return $telegram_id->user();
+        return $telegram_id;
     }
 }

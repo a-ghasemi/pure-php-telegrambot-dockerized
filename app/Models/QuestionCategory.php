@@ -9,6 +9,7 @@ class QuestionCategory extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'user_id',
         'title',
         'order',
         'status',

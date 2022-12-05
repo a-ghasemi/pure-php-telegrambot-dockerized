@@ -10,6 +10,7 @@ class Question extends Model
     use HasFactory;
     protected $fillable = [
         'question_category_id',
+        'user_id',
         'title',
         'type',
         'content',
