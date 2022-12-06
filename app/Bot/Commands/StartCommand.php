@@ -36,21 +36,6 @@ class StartCommand extends ExtendedSystemCommand
             case 'base':
                 return $this->showWelcome();
                 break;
-            case 'ask_for_question_content':
-                return $this->getQuestionContent();
-                break;
-            case 'ask_for_question_title':
-                return $this->getQuestionTitle();
-                break;
-            case 'ask_for_category':
-                return $this->getCategory();
-                break;
-            case 'has_new_category':
-                return $this->getNewCategory();
-                break;
-            case 'request_user_info':
-                    return $this->getUserInfo();
-                break;
         }
 
         return $this->replyToChat(__('bot.command.wrong'));;
@@ -58,167 +43,25 @@ class StartCommand extends ExtendedSystemCommand
 
     protected function showWelcome(): ServerResponse
     {
-        $this->replyToChat(__('bot.start.welcome'), [
-                'reply_markup' => Keyboard::remove(['selective' => true])
-            ],
-        );
-
-        if ($this->user) {
-            return $this->showUserMenu();
-        }
-
-        return $this->askForQuestion();
+        return ($this->user)?$this->showUserMenu():$this->showPublicMenu();
     }
 
     protected function showUserMenu(): ServerResponse
     {
         $this->session->state = 'user_menu';
 
-        return $this->replyToChat(__('bot.user_menu.welcome'));
+        $this->replyToChat(__('bot.menu.user_welcome',['name' => $this->user->firstname ?? $this->user->username]));
+        return $this->replyToChat(__('bot.menu.items.ask_question'));
     }
 
-    protected function askForQuestion(): ServerResponse
+    ## Checked
+    protected function showPublicMenu(): ServerResponse
     {
-        $this->session->state = 'ask_for_question_content';
-        return $this->replyToChat(__('bot.question.content.ask'), [
-            'reply_markup' => Keyboard::remove(['selective' => true]),
-        ]);
+        $this->session->state = 'public_menu';
+
+        $this->replyToChat(__('bot.menu.public_welcome'));
+        return $this->replyToChat(__('bot.menu.items.ask_question'));
     }
 
-    protected function getQuestionContent(): ServerResponse
-    {
-        $question_type = $this->getMessage()->getType();
-
-        if($question_type == 'voice'){
-            $download_path = $this->telegram->getDownloadPath();
-            $question = $this->getMessage()->getVoice();
-
-            $file_id = $question->getFileId();
-            $file    = Request::getFile(['file_id' => $file_id]);
-            if ($file->isOk() && Request::downloadFile($file->getResult())) {
-                $question = $download_path . '/' . $file->getResult()->getFilePath();
-            } else {
-                $question = "Failed to download | file_id:{$file_id}";
-            }
-
-        }
-        else{
-            $question = $this->getMessage()->getText(true);
-        }
-
-        $question_record = Question::create([
-            'question_category_id' => null,
-            'telegram_user_id'     => null,
-            'title'                => null,
-            'type'                 => $question_type,
-            'content'              => $question,
-            'order'                => 0,
-            'status'               => 'pending',
-        ]);
-
-        $this->session->question_id = $question_record->id;
-
-        $this->replyToChat(__('bot.question.content.got_it'));
-
-        $this->session->state = 'ask_for_question_title';
-        return $this->replyToChat(__('bot.question.title.ask'), [
-            'reply_markup' => Keyboard::remove(['selective' => true]),
-        ]);
-    }
-
-    protected function getQuestionTitle(): ServerResponse
-    {
-        $question_title = $this->getMessage()->getText(true);
-
-        Question::find($this->session->question_id)->update([
-            'title' => $question_title,
-        ]);
-
-        $this->replyToChat(__('bot.question.title.got_it'));
-
-//        # make category buttons
-//        $categories = QuestionCategory::where('status','published')
-//            ->orderBy('order')->orderBy('id')
-//            ->get(['id','title'])
-//            ->pluck('title','id');
-//
-//        $keyboard = [];
-//        $item = [];
-//        foreach($categories as $id => $title){
-//            $item[] = ['text' => $title, 'callback_data' => "cat-{$id}"];
-//            if(count($item) >= 2){
-//                $keyboard[] = $item;
-//                $item = [];
-//            }
-//        }
-//        $keyboard[] = [['text' => __('bot.buttons.new_category'),'callback_data' => 'cat-new']];
-//
-//        $keyboard = (new Keyboard(...$keyboard));
-//
-//        $this->session->state = 'ask_for_category';
-//        return $this->replyToChat(__('bot.question.set_category'), [
-//            'reply_markup' => $keyboard,
-//        ]);
-        if (!$this->user) {
-            $this->session->state = 'request_user_info';
-            return $this->replyToChat(__('bot.auth.send'), [
-                'reply_markup' => (new Keyboard(
-                    (new KeyboardButton('ثبت اطلاعات تماس'))
-                        ->setRequestContact(true)
-                ))
-                ->setOneTimeKeyboard(true)
-                ->setResizeKeyboard(true)
-                ->setSelective(true)
-            ]);
-        }
-        else{
-            $this->session->state = 'finish_question';
-            return $this->replyToChat(__('bot.question.submitted'), [
-                'reply_markup' => Keyboard::remove(),
-            ]);
-        }
-
-    }
-
-    protected function getCategory(): ServerResponse
-    {
-        $message = $this->getMessage();
-        $command = $message->getCommand();
-        $this->debugLog($command);
-
-        Question::find($this->session->question_id)->update([
-            'category_id' => intval($command),
-        ]);
-
-        $this->replyToChat(__('bot.category.got_it'));
-
-        return $this->replyToChat(__('bot.category.registered'), [
-            'reply_markup' => Keyboard::remove(['selective' => true]),
-        ]);
-    }
-
-    protected function getUserInfo(): ServerResponse
-    {
-        $message = $this->getMessage();
-
-        $tid = TelegramId::create([
-            'user_id' => null,
-            'telegram_id' => $message->getFrom()->getId(),
-            'phone_number' => $message->getContact()->getPhoneNumber(),
-            'username' => $message->getFrom()->getUsername(),
-            'firstname' => $message->getFrom()->getFirstName(),
-            'lastname' => $message->getFrom()->getLastName(),
-            'language' => $message->getFrom()->getLanguageCode(),
-        ]);
-
-        Question::find($this->session->question_id)->update([
-            'telegram_user_id' => $tid->id,
-        ]);
-
-
-        $this->replyToChat(__('bot.question.finished'));
-
-        return $this->showUserMenu();
-    }
 
 }
