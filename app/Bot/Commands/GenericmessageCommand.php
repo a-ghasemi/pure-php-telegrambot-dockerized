@@ -2,6 +2,7 @@
 
 namespace App\Bot\Commands;
 
+use App\Bot\General\BotSession;
 use App\Bot\General\ExtendedSystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Request;
@@ -12,6 +13,9 @@ class GenericmessageCommand extends ExtendedSystemCommand
     protected $description = 'Handle generic message';
     protected $version = '1.0.0';
 
+    /**
+     * @throws \Longman\TelegramBot\Exception\TelegramException
+     */
     public function execute(): ServerResponse
     {
         $message = $this->getMessage();
