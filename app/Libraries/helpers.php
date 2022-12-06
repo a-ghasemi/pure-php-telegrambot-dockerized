@@ -130,18 +130,6 @@ function config_keys_all($config)
     return array_keys(config($config));
 }
 
-function config_key($config, $value)
-{
-    return (string)array_search($value, config($config));
-}
-
-function config_keys($config,array $values):array
-{
-    return array_map(function($v) use ($config){
-        return config_key($config, $v);
-    },$values);
-}
-
 function config_trans($config, $key)
 {
     return trans("{$config}.".config("{$config}.{$key}"));
@@ -1296,16 +1284,6 @@ function colorHex2RGB($inp)
 
 }
 
-function majorCostTypeId($arr)
-{
-    $types = ['hidden', 'approximate', 'exact', 'computing'];
-    $ret = [2, null];
-    foreach ($arr as $id => $type) {
-        $type = array_search($type, $types);
-        if ($type > $ret[0]) $ret = [$type, $id];
-    }
-    return $ret;
-}
 
 function getlangfolder($lang)
 {
@@ -1377,31 +1355,6 @@ function visitorIsDeveloper()
 }
 
 
-function daynameEn2Fa($inp)
-{
-    $fa = [
-        '',
-        'شنبه',
-        'یک شنبه',
-        'دوشنبه',
-        'سه شنبه',
-        'چهارشنبه',
-        'پنج شنبه',
-        'جمعه',
-    ];
-    $en = [
-        '',
-        'Sat',
-        'Sun',
-        'Mon',
-        'Tue',
-        'Wed',
-        'Thu',
-        'Fri',
-    ];
-    return (array_search($inp, $en)) ? $fa[array_search($inp, $en)] : $inp;
-}
-
 function checkExUrl($url, $dd = false)
 {
     $url = 'http://' . $url;
@@ -1456,8 +1409,7 @@ function mapFolder($addr, $excludeDirs = [], $flashCache = false)
     $ffs = scandir(base_path($addr));
 
     $ffs = array_diff($ffs, array_merge(['.', '..'], $excludeDirs));
-//    unset($ffs[array_search('.', $ffs, true)]);
-//    unset($ffs[array_search('..', $ffs, true)]);
+
 
     if (count($ffs) > 0)
         foreach ($ffs as $ff) {
@@ -1687,57 +1639,6 @@ function includeRouteFiles($dir, $recursive = true, $exclusion = [])
         }
         require_once($dir . '/' . $route_file);
     }
-}
-
-function filesContains($baseDir, $searchStr, $extList, $dirFrom = null, $showAbove = 0)
-{
-    $ob = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir), RecursiveIteratorIterator::SELF_FIRST);
-    $files = [];
-    foreach ($ob as $name => $object) {
-        if (is_file($name)) {
-            foreach ($extList as $ext) {
-                if ($e = substr($name, (strlen($ext) * -1)) == $ext) {
-                    $tmp = file_get_contents($name);
-                    if (strpos($tmp, $searchStr) !== false) {
-                        $folders = explode('/', dirname($name));
-                        $fromFolder = array_slice($folders, array_search($dirFrom, $folders) + $showAbove);
-                        $foldersAbove = $dirFrom ? $fromFolder : array_slice($folders, -1 * $showAbove);
-
-                        $folders = implode('/', $foldersAbove);
-
-                        $path = ($dirFrom || $showAbove ? $folders . '/' : '');
-                        $files[] = $path . basename($name, $e);
-                    }
-                }
-            }
-        }
-    }
-
-    return array_reverse($files);
-}
-
-function folderContains($baseDir, $searchStr, $extList, $dirFrom = null, $showAbove = 0)
-{
-    $ob = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir), RecursiveIteratorIterator::SELF_FIRST);
-    $files = [];
-    foreach ($ob as $name => $object) {
-        if (is_file($name)) {
-            foreach ($extList as $k => $ext) {
-                if ($e = substr($name, (strlen($ext) * -1)) == $ext) {
-                    if (strpos($name, $searchStr) !== false) {
-                        $folders = explode('/', dirname($name));
-                        $foldersAbove = implode('/', array_slice($folders, -1 * $showAbove));
-                        $fromFolder = implode('/', array_slice($folders, -1 * array_search($dirFrom, $folders)));
-
-                        $path = ($dirFrom ? $fromFolder . '/' : ($showAbove ? $foldersAbove . '/' : ''));
-                        $files[] = $path . basename($name, $e);
-                    }
-                }
-            }
-        }
-    }
-
-    return array_reverse($files);
 }
 
 function getHttpStatusCode($url)

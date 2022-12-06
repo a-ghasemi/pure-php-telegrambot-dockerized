@@ -13,7 +13,7 @@ class Webhook extends Controller
 {
     public function index(Request $request, string $token)
     {
-        $bot = BotConnection::where('type', config_key('enums.bot_connections', 'telegram'))->where('active', true)->where('webhook_token', $token)->first();
+        $bot = BotConnection::where('active', true)->where('webhook_token', $token)->first();
 
         if (!$bot) {
             mylog('Wrong Bot Token', 'Warning', "Encoded Bot Token: " . base64_encode($token));
