@@ -3,6 +3,7 @@ namespace App\Bot\General;
 
 use App\Models\TelegramId;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Entities\Update;
@@ -33,7 +34,12 @@ abstract class ExtendedSystemCommand extends SystemCommand
 
     }
 
-    protected function debugLog($obj): void
+    protected function laraLog($caption, ...$data):void
+    {
+        Log::debug(var_export(['Caption: '.$caption, $data],true));
+    }
+
+    protected function robotLog($obj): void
     {
         if (!$this->debug) return;
 
@@ -56,12 +62,5 @@ abstract class ExtendedSystemCommand extends SystemCommand
         ];
 
         Request::sendMessage($data);
-    }
-
-    protected function moveToCommand(string $command): ServerResponse
-    {
-        $this->session->refresh(true);
-        $this->telegram->runCommands([$command]);
-        return Request::emptyResponse();
     }
 }

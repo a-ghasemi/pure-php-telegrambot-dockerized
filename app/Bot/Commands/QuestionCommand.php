@@ -21,13 +21,13 @@ class QuestionCommand extends ExtendedSystemCommand
     public function execute(): ServerResponse
     {
         if ($this->getMessage()->getCommand() == 'question') {
-            $this->session->refresh();
+            $this->session->refresh(true);
             $this->session->state = 'base';
         }
 
         $state = $this->session->state ?? 'base';
 
-        $this->debugLog("status: " . $state);
+        $this->robotLog($state);
 
         switch ($state) {
             case 'base':
@@ -170,7 +170,7 @@ class QuestionCommand extends ExtendedSystemCommand
     {
         $message = $this->getMessage();
         $command = $message->getCommand();
-        $this->debugLog($command);
+        $this->robotLog($command);
 
         Question::find($this->session->question_id)->update([
             'category_id' => intval($command),
@@ -206,8 +206,7 @@ class QuestionCommand extends ExtendedSystemCommand
         ]);
 
 
-        $this->replyToChat(__('bot.question.finished'));
-        return $this->moveToCommand('/start');
+        return $this->replyToChat(__('bot.question.finished'));
     }
 
 }

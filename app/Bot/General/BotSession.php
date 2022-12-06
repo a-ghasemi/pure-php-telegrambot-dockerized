@@ -18,9 +18,11 @@ class BotSession
 
     public function refresh($force = false)
     {
-        $command = $this->variables['executed_command'] ?? null;
+        Log::debug(var_export( ['ref_bef_sess', $this->variables],true));
+//        $command = $this->variables['executed_command'] ?? null;
         $this->variables = [];
-        if($command && !$force) $this->variables['executed_command'] = $command;
+//        if($command && !$force) $this->variables['executed_command'] = $command;
+        Log::debug(var_export( ['ref_aft_sess', $this->variables],true));
         $this->updateCache();
     }
 
@@ -34,6 +36,7 @@ class BotSession
 
     protected function updateCache(): void
     {
+        Log::debug(var_export( ['upd_sess', $this->variables],true));
         Cache::put($this->getSessionId(), $this->variables);
 
 //Log::debug('update_cache:'.$this->getSessionId() . PHP_EOL . var_export($this->variables,true));
@@ -46,6 +49,7 @@ class BotSession
 
     public function __set(string $name, $value): void
     {
+//        Log::debug(var_export( ['set_sess', $this->variables],true));
         $this->getCache();
         $this->variables[$name] = $value;
         $this->updateCache();
@@ -53,6 +57,7 @@ class BotSession
 
     public function __get(string $name)
     {
+//        Log::debug(var_export( ['get_sess', $this->variables],true));
         $this->getCache();
         return $this->variables[$name] ?? null;
     }

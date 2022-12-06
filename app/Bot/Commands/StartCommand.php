@@ -18,16 +18,17 @@ class StartCommand extends ExtendedSystemCommand
     protected $description = 'Start command';
     protected $usage = '/start';
 
+    ## Checked
     public function execute(): ServerResponse
     {
         if ($this->getMessage()->getCommand() == 'start') {
-            $this->session->refresh();
+            $this->session->refresh(true);
             $this->session->state = 'base';
         }
 
         $state = $this->session->state ?? 'base';
 
-        $this->debugLog("status: " . $state);
+        $this->robotLog("status: " . $state);
 
         switch ($state) {
             case 'base':
@@ -38,23 +39,27 @@ class StartCommand extends ExtendedSystemCommand
         return $this->replyToChat(__('bot.command.wrong'));;
     }
 
+    ## Checked 1/2
     protected function showWelcome(): ServerResponse
     {
-        ($this->user)?$this->showUserMenu():$this->showPublicMenu();
-        return $this->replyToChat(__('bot.menu.items.ask_question'));
+        return ($this->user)?$this->showUserMenu():$this->showPublicMenu();
     }
 
     protected function showUserMenu(): ServerResponse
     {
         $this->session->state = 'user_menu';
 
-        return $this->replyToChat(__('bot.menu.user_welcome',['name' => $this->user->firstname ?? $this->user->username]));
+        $this->replyToChat(__('bot.menu.user_welcome',['name' => $this->user->firstname ?? $this->user->username]));
+        return $this->replyToChat(__('bot.menu.items.ask_question'));
     }
 
+    ## Checked
     protected function showPublicMenu(): ServerResponse
     {
         $this->session->state = 'public_menu';
-        return $this->replyToChat(__('bot.menu.public_welcome'));
+
+        $this->replyToChat(__('bot.menu.public_welcome'));
+        return $this->replyToChat(__('bot.menu.items.ask_question'));
     }
 
 

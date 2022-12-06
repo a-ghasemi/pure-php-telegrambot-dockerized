@@ -18,7 +18,7 @@ class GenericmessageCommand extends ExtendedSystemCommand
 
         $command = $this->session->executed_command;
 
-        $this->debugLog("[generic_message]");
+        $this->robotLog("[generic_message]");
 
         return $command ? $this->telegram->executeCommand($command) : Request::emptyResponse();
     }
