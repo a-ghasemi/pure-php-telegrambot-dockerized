@@ -3,29 +3,32 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Bot\General\BotConfig;
-use App\Bot\RobotHandler;
+use App\Bot\MigrantRobot;
 use App\Http\Controllers\Controller;
+use App\Models\BotConnection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class Webhook extends Controller
 {
-    public function webhook(Request $request, string $token): \Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    public function index(Request $request, string $token)
     {
-//        Bot::where('token',$token)->firstOrFail();
+        $bot = BotConnection::where('type', config_key('enums.bot_connections', 'telegram'))->where('active', true)->where('webhook_token', $token)->first();
 
-        abort_unless(trim($token) == config('bot.webhook.token'),404);
-
-        $bot_config = new BotConfig();
-        try {
-            $bot_config->checkConfiguration();
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
+        if (!$bot) {
+            mylog('Wrong Bot Token', 'Warning', "Encoded Bot Token: " . base64_encode($token));
+            return response('done', 200);
         }
 
-        new RobotHandler($request, $bot_config);
+        mylog($bot->title . ' Bot Hooked', 'Info',
+            "Bot Name: " . $bot->title . '<br/>' .
+            "Bot Username:  " . $bot->username . '<br/>' .
+            "Bot Classname: " . Str::ucfirst(Str::camel($bot->username)) . '<br/>' .
+            "Bot Token: " . $token);
 
-        return response('done',200);
+        $robotClass = 'App\\Bot\\' . Str::ucfirst(Str::camel($bot->username));
+        new $robotClass($request, $bot);
 
+        return response('done', 200);
     }
-
 }

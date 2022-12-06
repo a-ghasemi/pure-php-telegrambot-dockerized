@@ -14,5 +14,6 @@ Route::group([
         Route::any('ping', function (){
             return "PONG!";
         })->name('test.ping');
-        Route::post('webhook/{token}', "\App\Http\Controllers\Api\V1\Webhook@webhook")->name('bot.webhook');
+
+        Route::post('webhook/{token}', "\App\Http\Controllers\Api\V1\Webhook@index")->name('bot.webhook');
 });
