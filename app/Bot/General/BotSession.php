@@ -9,16 +9,20 @@ use Longman\TelegramBot\Commands\Command;
 class BotSession
 {
     protected Command $command;
+    protected string $chat_id;
     protected array $variables = [];
 
     public function __construct($command)
     {
         $this->command = $command;
+        $this->chat_id = $command->getMessage()?->getChat()?->getId() ?? 'no_id'.Str::random(10);
     }
 
-    public function refresh()
+    public function refresh($force = false)
     {
+        $command = $this->getCurrCommand();
         $this->variables = [];
+        if($command && !$force) $this->setCurrCommand($command);
         $this->updateCache();
     }
 
@@ -39,7 +43,8 @@ class BotSession
 
     protected function getSessionId(): string
     {
-        return "sess_" . $this->command->getMessage()?->getChat()?->getId();
+        $sess_id = "sess_" . $this->chat_id;
+        return $sess_id;
     }
 
     public function __set(string $name, $value): void
@@ -53,5 +58,16 @@ class BotSession
     {
         $this->getCache();
         return $this->variables[$name] ?? null;
+    }
+
+    public function setCurrCommand($command): void
+    {
+        $this->variables['executed_command'] = $command;
+        $this->updateCache();
+    }
+
+    public function getCurrCommand(): ?string
+    {
+        return $this->variables['executed_command'] ?? null;
     }
 }
