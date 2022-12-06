@@ -1,6 +1,6 @@
 <?php
 
-namespace Packages;
+namespace App\Bot\General;
 
 use Longman\TelegramBot\Telegram;
 
@@ -9,6 +9,7 @@ class BotConfig
     private string $bot_token;
     private string $bot_username;
     private string $webhook_url;
+    public int $id = 1; #TODO: useless attr! remove this after updating old bot classes
 
     public function __construct()
     {

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Bot\General\BotConfig;
 use App\Bot\RobotHandler;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Longman\TelegramBot\Exception\TelegramException;
-use Packages\BotConfig;
 
 class Webhook extends Controller
 {
