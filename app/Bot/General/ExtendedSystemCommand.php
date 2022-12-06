@@ -11,10 +11,12 @@ abstract class ExtendedSystemCommand extends SystemCommand
 {
     protected TelegramId|null $user;
     protected BotSession $session;
-    protected $debug = true;
+    protected $debug;
 
     public function __construct(Telegram $telegram, ?Update $update = null)
     {
+        $this->debug = (bool)config('bot.telegram.debug_mode');
+
         parent::__construct($telegram, $update);
 
         $this->user = (new BotUser($this))->getRegisteredUser();
