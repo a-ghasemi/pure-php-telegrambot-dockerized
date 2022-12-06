@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Bot\RobotHandler;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Longman\TelegramBot\Exception\TelegramException;
 use Packages\BotConfig;
 
 class Webhook extends Controller
 {
-    public function webhook(string $token): void
+    public function webhook(Request $request, string $token): \Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
 //        Bot::where('token',$token)->firstOrFail();
 
@@ -21,15 +23,10 @@ class Webhook extends Controller
             error_log($e->getMessage());
         }
 
-        try {
-            $telegram = $bot_config->makeTelegramInstance();
-            $telegram->addCommandsPath(app_path('Bot/Commands'));
-            $telegram->setDownloadPath(storage_path('bot/downloads'));
-            $telegram->setUploadPath(storage_path('bot/uploads'));
-            $telegram->handle();
-        } catch (TelegramException $e) {
-            error_log($e->getMessage());
-        }
+        new RobotHandler($request, $bot_config);
+
+        return response('done',200);
+
     }
 
 }
