@@ -58,7 +58,10 @@ class StartCommand extends ExtendedSystemCommand
 
     protected function showWelcome(): ServerResponse
     {
-        $this->replyToChat(__('bot.start.welcome'));
+        $this->replyToChat(__('bot.start.welcome'), [
+                'reply_markup' => Keyboard::remove(['selective' => true])
+            ],
+        );
 
         if ($this->user) {
             return $this->showUserMenu();
@@ -160,9 +163,12 @@ class StartCommand extends ExtendedSystemCommand
             $this->session->state = 'request_user_info';
             return $this->replyToChat(__('bot.auth.send'), [
                 'reply_markup' => (new Keyboard(
-                    (new KeyboardButton('ثبت اطلاعات تماس'))->setRequestContact(true)
+                    (new KeyboardButton('ثبت اطلاعات تماس'))
+                        ->setRequestContact(true)
                 ))
                 ->setOneTimeKeyboard(true)
+                ->setResizeKeyboard(true)
+                ->setSelective(true)
             ]);
         }
         else{
