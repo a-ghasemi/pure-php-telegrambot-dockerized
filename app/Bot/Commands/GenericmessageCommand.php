@@ -16,7 +16,7 @@ class GenericmessageCommand extends ExtendedSystemCommand
     {
         $message = $this->getMessage();
 
-        $command = $this->session->executed_command;
+        $command = $this->session->getCurrCommand();
 
         $this->robotLog("[generic_message]");
 

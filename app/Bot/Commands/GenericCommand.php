@@ -20,7 +20,7 @@ class GenericCommand extends ExtendedSystemCommand
 //        $callback_query = $this->getCallbackQuery();
 //        $callback_data  = $callback_query->getData();
 
-        $command = $this->session->executed_command;
+        $command = $this->session->getCurrCommand();
 
 //        $this->debugLog("[generic]");
 

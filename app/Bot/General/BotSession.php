@@ -19,9 +19,9 @@ class BotSession
     public function refresh()
     {
         Log::debug(var_export( ['ref_bef_sess', $this->variables],true));
-//        $command = $this->variables['executed_command'] ?? null;
+//        $command = $this->getCurrCommand();
         $this->variables = [];
-//        if($command && !$force) $this->variables['executed_command'] = $command;
+//        if($command && !$force) $this->setCurrCommand($command);
         Log::debug(var_export( ['ref_aft_sess', $this->variables],true));
         $this->updateCache();
     }
@@ -44,7 +44,7 @@ class BotSession
 
     protected function getSessionId(): string
     {
-        return "sess_" . $this->command->getMessage()?->getChat()?->getId();
+        return "sess2_" . $this->command->getMessage()?->getChat()?->getId();
     }
 
     public function __set(string $name, $value): void
@@ -60,5 +60,16 @@ class BotSession
 //        Log::debug(var_export( ['get_sess', $this->variables],true));
         $this->getCache();
         return $this->variables[$name] ?? null;
+    }
+
+    public function setCurrCommand($command): void
+    {
+        $this->variables['executed_command'] = $command;
+        $this->updateCache();
+    }
+
+    public function getCurrCommand(): ?string
+    {
+        return $this->variables['executed_command'] ?? null;
     }
 }

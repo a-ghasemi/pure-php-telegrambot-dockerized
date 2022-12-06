@@ -26,7 +26,7 @@ abstract class ExtendedSystemCommand extends SystemCommand
         $this->session = (new BotSession($this));
 
         if(!in_array($this->name,['generic','genericmessage'])){
-            $this->session->executed_command = $this->name;
+            $this->session->setCurrCommand($this->name);
         }
 //        if($this->getMessage()->getCommand() == ltrim($this->usage,'/')){
 //            $this->session->state = 'base';
@@ -48,7 +48,7 @@ abstract class ExtendedSystemCommand extends SystemCommand
         $username = $this->getMessage()?->getFrom()?->getUsername();
         $username = $username ?: '---';
 
-        $command = $this->session->executed_command;
+        $command = $this->session->getCurrCommand();
         $command = $command ?: '---';
 
         $text = "username: {$username}" . PHP_EOL;
