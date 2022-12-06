@@ -22,6 +22,7 @@ class QuestionCommand extends ExtendedSystemCommand
     {
         if ($this->getMessage()->getCommand() == 'question') {
             $this->session->refresh();
+            $this->session->setCurrCommand($this->name);
             $this->session->state = 'base';
         }
 

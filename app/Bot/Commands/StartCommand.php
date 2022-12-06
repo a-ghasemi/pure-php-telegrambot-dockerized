@@ -23,6 +23,7 @@ class StartCommand extends ExtendedSystemCommand
     {
         if ($this->getMessage()->getCommand() == 'start') {
             $this->session->refresh();
+            $this->session->setCurrCommand($this->name);
             $this->session->state = 'base';
         }
 
