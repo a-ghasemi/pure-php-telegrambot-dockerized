@@ -21,7 +21,7 @@ class QuestionCommand extends ExtendedSystemCommand
     public function execute(): ServerResponse
     {
         if ($this->getMessage()->getCommand() == 'question') {
-            $this->session->refresh(true);
+            $this->session->refresh();
             $this->session->state = 'base';
         }
 

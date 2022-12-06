@@ -16,7 +16,7 @@ class BotSession
         $this->command = $command;
     }
 
-    public function refresh($force = false)
+    public function refresh()
     {
         Log::debug(var_export( ['ref_bef_sess', $this->variables],true));
 //        $command = $this->variables['executed_command'] ?? null;

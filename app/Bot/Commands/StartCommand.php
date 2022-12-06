@@ -22,7 +22,7 @@ class StartCommand extends ExtendedSystemCommand
     public function execute(): ServerResponse
     {
         if ($this->getMessage()->getCommand() == 'start') {
-            $this->session->refresh(true);
+            $this->session->refresh();
             $this->session->state = 'base';
         }
 
