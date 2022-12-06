@@ -16,9 +16,11 @@ class BotSession
         $this->command = $command;
     }
 
-    public function refresh()
+    public function refresh($force = false)
     {
+        $command = $this->variables['executed_command'] ?? null;
         $this->variables = [];
+        if($command && !$force) $this->variables['executed_command'] = $command;
         $this->updateCache();
     }
 

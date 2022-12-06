@@ -2,7 +2,9 @@
 namespace App\Bot\General;
 
 use App\Models\TelegramId;
+use Illuminate\Contracts\Support\Arrayable;
 use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
@@ -31,9 +33,11 @@ abstract class ExtendedSystemCommand extends SystemCommand
 
     }
 
-    protected function debugLog(string $message): void
+    protected function debugLog($obj): void
     {
         if (!$this->debug) return;
+
+        $message = (is_string($obj))?$obj:var_export($obj,true);
 
         $username = $this->getMessage()?->getFrom()?->getUsername();
         $username = $username ?: '---';
@@ -54,4 +58,10 @@ abstract class ExtendedSystemCommand extends SystemCommand
         Request::sendMessage($data);
     }
 
+    protected function moveToCommand(string $command): ServerResponse
+    {
+        $this->session->refresh(true);
+        $this->telegram->runCommands([$command]);
+        return Request::emptyResponse();
+    }
 }
