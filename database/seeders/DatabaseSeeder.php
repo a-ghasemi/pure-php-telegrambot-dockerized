@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(QuestionCategorySeeder::class);
+        $this->call(BotConnectionSeeder::class);
 
         // \App\Models\User::factory(10)->create();
 
