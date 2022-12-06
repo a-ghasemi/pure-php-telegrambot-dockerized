@@ -5,7 +5,7 @@ use Packages\BotConfig;
 use App\Bot\General\BotMachine as BM;
 use App\Bot\General\BotState;
 
-class MigrantRobot extends BM
+class MigrantionRobot extends BM
 {
     const DEBUG_MODE = false;
 

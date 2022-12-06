@@ -17,7 +17,7 @@ class BotConnectionSeeder extends Seeder
             'username'        => 'migration_robot',
             'robot_token'     => '5701451847:AAHWFV3yWg-64aCpULBVKm1mKUKUDrAeeQY2',
             'parameters'      => null,
-            'webhook_token'   => 'fweLfk23',
+            'webhook_token'   => 'slq1D1f23k',
             'active'          => true,
         ]);
     }

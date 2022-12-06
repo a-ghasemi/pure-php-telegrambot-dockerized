@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Bot\General\BotConfig;
-use App\Bot\MigrantRobot;
+use App\Bot\MigrantionRobot;
 use App\Http\Controllers\Controller;
 use App\Models\BotConnection;
 use Illuminate\Http\Request;
