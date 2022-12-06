@@ -118,7 +118,7 @@ class StartCommand extends ExtendedSystemCommand
         $this->replyToChat(__('bot.question.content.got_it'));
 
         $this->session->state = 'ask_for_question_title';
-        return $this->replyToChat(__('bot.question.set_title'), [
+        return $this->replyToChat(__('bot.question.title.ask'), [
             'reply_markup' => Keyboard::remove(['selective' => true]),
         ]);
     }
@@ -158,7 +158,7 @@ class StartCommand extends ExtendedSystemCommand
 //        ]);
         if (!$this->user) {
             $this->session->state = 'request_user_info';
-            return $this->replyToChat(__('bot.question.submitted'), [
+            return $this->replyToChat(__('bot.auth.send'), [
                 'reply_markup' => (new Keyboard(
                     (new KeyboardButton('ثبت اطلاعات تماس'))->setRequestContact(true)
                 ))
